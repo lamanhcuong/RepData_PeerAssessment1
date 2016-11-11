@@ -13,7 +13,7 @@ sumStepsByDay <- aggregate(steps ~ date, data, sum)
 **Make a histogram of the total number of steps taken each day**
 
 ```r
-hist(sumStepsByDay$steps, xlab = "Number of steps", ylab = "Frequency", main = "Histogram of the total number of steps taken each day")
+hist(sumStepsByDay$steps, xlab = "Number of steps", ylab = "Frequency", main = "Histogram of the total number of steps taken each day", breaks=50, col = "red")
 ```
 
 ![](PA1_template_files/figure-html/part21_plot1-1.png)<!-- -->
@@ -82,7 +82,7 @@ setDT(imputeddata)[FByInterval, steps := ifelse(is.na(steps) == TRUE, as.integer
 
 ```r
 sumStepsByDay2 <- aggregate(steps ~ date, imputeddata, sum)
-hist(sumStepsByDay2$steps, xlab = "Number of steps taken per day", ylab = "Frequency", main = "Histogram of the total number of steps - Imputing missing values")
+hist(sumStepsByDay2$steps, xlab = "Number of steps taken per day", ylab = "Frequency", main = "Histogram of the total number of steps - Imputing missing values", breaks=50, col = "red")
 ```
 
 ![](PA1_template_files/figure-html/part43-1.png)<!-- -->
