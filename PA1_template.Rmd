@@ -8,6 +8,10 @@ output:
 
 ## Loading and preprocessing the data
 ```{r part1, echo=TRUE}
+library(data.table)
+library(ggplot2)
+library(lattice)
+
 data <- read.csv("activity.csv")
 ## Calculate the total number of steps taken per day
 sumStepsByDay <- aggregate(steps ~ date, data, sum)
@@ -16,7 +20,8 @@ sumStepsByDay <- aggregate(steps ~ date, data, sum)
 ## What is mean total number of steps taken per day?
 **Make a histogram of the total number of steps taken each day**
 ```{r part21_plot1, fig.height=5}
-hist(sumStepsByDay$steps, xlab = "Number of steps", ylab = "Frequency", main = "Histogram of the total number of steps taken each day", breaks=50, col = "red")
+##hist(sumStepsByDay$steps, xlab = "Number of steps", ylab = "Frequency", main = "Histogram of the total number of steps taken each day", breaks=50, col = "red")
+qplot(sumStepsByDay$steps, binwidth=700, xlab = "Number of steps", ylab = "Count", main = "Histogram of the total number of steps taken each day")
 ```
 
 **Calculate and report the mean and median of the total number of steps taken per day**
@@ -64,7 +69,7 @@ mergeData$PFRatio <- (1 - mergeData$interval / (mergeData$steps[, "Count"] + mer
 mergeData <- mergeData[mergeData$PFRatio >= cPFRatio,]
 
 
-library(data.table)
+
 ## Filling Step 1 (set missing value with mean value of day)
 setDT(imputeddata)[mergeData, steps := ifelse(is.na(steps) == TRUE, mergeData$steps[, "Mean"], steps), on = "date"]
 
@@ -76,7 +81,7 @@ setDT(imputeddata)[FByInterval, steps := ifelse(is.na(steps) == TRUE, as.integer
 **Make a histogram of the total number of steps taken each day**
 ```{r part43, fig.height=5}
 sumStepsByDay2 <- aggregate(steps ~ date, imputeddata, sum)
-hist(sumStepsByDay2$steps, xlab = "Number of steps taken per day", ylab = "Frequency", main = "Histogram of the total number of steps - Imputing missing values", breaks=50, col = "red")
+qplot(sumStepsByDay2$steps, binwidth=700, xlab = "Number of steps taken per day", ylab = "Count", main = "Histogram of the total number of steps - Imputing missing values")
 
 ## Calculate and report the mean and median total number of steps taken per day
 meanStepsByDay2 <- mean(sumStepsByDay2$steps)
@@ -95,7 +100,7 @@ imputeddata$wkday <- ifelse(format(as.Date(imputeddata$date, "%Y-%m-%d"), "%a") 
 **Make a panel plot containing a time series plot (i.e. type = "l") of the Interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis)**
 ```{r part52, fig.height=5}
 data3 <- aggregate(steps ~ interval+wkday, imputeddata, mean)
-library(lattice)
+
 xyplot(steps ~ interval | wkday, data = data3, type="l", layout = c(1, 2), xlab="Interval", ylab="Number of steps")
 ```
 

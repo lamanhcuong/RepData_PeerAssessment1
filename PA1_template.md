@@ -4,6 +4,10 @@
 ## Loading and preprocessing the data
 
 ```r
+library(data.table)
+library(ggplot2)
+library(lattice)
+
 data <- read.csv("activity.csv")
 ## Calculate the total number of steps taken per day
 sumStepsByDay <- aggregate(steps ~ date, data, sum)
@@ -13,7 +17,8 @@ sumStepsByDay <- aggregate(steps ~ date, data, sum)
 **Make a histogram of the total number of steps taken each day**
 
 ```r
-hist(sumStepsByDay$steps, xlab = "Number of steps", ylab = "Frequency", main = "Histogram of the total number of steps taken each day", breaks=50, col = "red")
+##hist(sumStepsByDay$steps, xlab = "Number of steps", ylab = "Frequency", main = "Histogram of the total number of steps taken each day", breaks=50, col = "red")
+qplot(sumStepsByDay$steps, binwidth=700, xlab = "Number of steps", ylab = "Count", main = "Histogram of the total number of steps taken each day")
 ```
 
 ![](PA1_template_files/figure-html/part21_plot1-1.png)<!-- -->
@@ -69,7 +74,7 @@ mergeData$PFRatio <- (1 - mergeData$interval / (mergeData$steps[, "Count"] + mer
 mergeData <- mergeData[mergeData$PFRatio >= cPFRatio,]
 
 
-library(data.table)
+
 ## Filling Step 1 (set missing value with mean value of day)
 setDT(imputeddata)[mergeData, steps := ifelse(is.na(steps) == TRUE, mergeData$steps[, "Mean"], steps), on = "date"]
 
@@ -82,7 +87,7 @@ setDT(imputeddata)[FByInterval, steps := ifelse(is.na(steps) == TRUE, as.integer
 
 ```r
 sumStepsByDay2 <- aggregate(steps ~ date, imputeddata, sum)
-hist(sumStepsByDay2$steps, xlab = "Number of steps taken per day", ylab = "Frequency", main = "Histogram of the total number of steps - Imputing missing values", breaks=50, col = "red")
+qplot(sumStepsByDay2$steps, binwidth=700, xlab = "Number of steps taken per day", ylab = "Count", main = "Histogram of the total number of steps - Imputing missing values")
 ```
 
 ![](PA1_template_files/figure-html/part43-1.png)<!-- -->
@@ -107,7 +112,7 @@ imputeddata$wkday <- ifelse(format(as.Date(imputeddata$date, "%Y-%m-%d"), "%a") 
 
 ```r
 data3 <- aggregate(steps ~ interval+wkday, imputeddata, mean)
-library(lattice)
+
 xyplot(steps ~ interval | wkday, data = data3, type="l", layout = c(1, 2), xlab="Interval", ylab="Number of steps")
 ```
 
